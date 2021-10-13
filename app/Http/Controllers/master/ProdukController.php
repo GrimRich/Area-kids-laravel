@@ -48,43 +48,43 @@ class ProdukController extends Controller
         ]);
     }
 
+    public function indexCoba($home)
+    {
+        return view('welcome', [
+            'home' => $home
+        ]);
+    }
+
     public function updateOrCreate(ProdukStore $request)
     {
         if ($this->model->find($request->id)) {
             try {
                 $variant = ProdukSeleksi::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 $variant = ProdukVarian::where('id_produk', $request->id)->pluck('id')->toArray();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukVarianPilihan::whereIn('id_produk_varian', $variant)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukVarian::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukGambar::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukUlasan::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 $this->model->destroy($request->id);
             } catch (\Throwable $th) {
-                //throw $th;
             }
         }
 
@@ -154,6 +154,9 @@ class ProdukController extends Controller
                     'id_produk' => $generateId,
                     'gambar' => is_string($value['gambar']) ? $value['gambar'] : ''
                 ];
+
+                if (!is_string($value['gambar']) && $value['id']) {
+                }
 
                 // Update or Create gambar
                 $gambarResult = $this->global->store($gambarModel, $gambarId, $gambarData);
@@ -245,37 +248,30 @@ class ProdukController extends Controller
             try {
                 $variant = ProdukSeleksi::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 $variant = ProdukVarian::where('id_produk', $request->id)->pluck('id')->toArray();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukVarianPilihan::whereIn('id_produk_varian', $variant)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukVarian::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukGambar::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 ProdukUlasan::where('id_produk', $request->id)->delete();
             } catch (\Throwable $th) {
-                //throw $th;
             }
             try {
                 $this->model->destroy($request->id);
             } catch (\Throwable $th) {
-                //throw $th;
             }
 
             http_response_code(500);
