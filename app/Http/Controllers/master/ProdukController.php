@@ -8,6 +8,7 @@ use App\Http\Controllers\GlobalController;
 use App\Http\Requests\master\ProdukStore;
 use App\model\master\Produk;
 use App\model\master\ProdukGambar;
+use App\model\master\ProdukSeleksi;
 use App\model\master\ProdukUlasan;
 use App\model\master\ProdukVarian;
 use App\model\master\ProdukVarianPilihan;
@@ -28,7 +29,7 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
-        $fields = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'alias', 'tags'];
+        $fields = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'harga_min', 'harga_max', 'alias', 'tags', 'tampil'];
         $withCount = $this->withCount;
         $relations = [];
         $where = [];
@@ -49,120 +50,236 @@ class ProdukController extends Controller
 
     public function updateOrCreate(ProdukStore $request)
     {
-        // Delete if id exist
         if ($this->model->find($request->id)) {
-            $variant = ProdukVarian::where('id_produk', $request->id)->pluck('id')->toArray();;
-            ProdukVarianPilihan::whereIn('id_produk_varian', $variant)->delete();
-            ProdukVarian::where('id_produk', $request->id)->delete();
-            ProdukGambar::where('id_produk', $request->id)->delete();
-            ProdukUlasan::where('id_produk', $request->id)->delete();
-            $this->model->destroy($request->id);
+            try {
+                $variant = ProdukSeleksi::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                $variant = ProdukVarian::where('id_produk', $request->id)->pluck('id')->toArray();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukVarianPilihan::whereIn('id_produk_varian', $variant)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukVarian::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukGambar::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukUlasan::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                $this->model->destroy($request->id);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
         }
 
         $generateId = $request->id ? $request->id : Str::orderedUuid();
 
-        $id = ['id' => $generateId];
+        try {
+            $id = ['id' => $generateId];
 
-        $data = [
-            'nama' => $request->nama,
-            'id_kategori' => $request->id_kategori,
-            'nama' => $request->nama,
-            'deskripsi' => $request->deskripsi,
-            'stok' => $request->stok,
-            'berat' => $request->berat,
-            'harga' => $request->harga,
-            'harga_coret' => $request->harga_coret,
-            'diskon' => $request->diskon,
-            'alias' => $request->alias,
-            'tags' => $request->tags,
-        ];
-
-        // Update or Create data
-
-        $result = $this->global->store($this->model, $id, $data);
-
-        // Upload Image
-        if ($request->gambar_utama != $result->gambar_utama && count($request->gambar_utama) > 0) {
-            $this->global->upload(
-                'image/produk/' . $result->id,
-                $request->gambar_utama,
-                $result,
-                'gambar_utama',
-                $generateId,
-                'utama'
-            );
-        }
-
-        // Foreach gambar
-        foreach ($request->gambar as $key => $value) {
-            $gambarModel = new ProdukGambar();
-            $gambarGenerateId = $value['id'] ? $value['id'] : Str::orderedUuid();
-            $gambarId = ['id' => $gambarGenerateId];
-
-            $gambarData = [
-                'id' => $gambarGenerateId,
-                'id_produk' => $generateId,
+            $data = [
+                'nama' => $request->nama,
+                'id_kategori' => $request->id_kategori,
+                'nama' => $request->nama,
+                'deskripsi' => $request->deskripsi,
+                'stok' => $request->stok,
+                'berat' => $request->berat,
+                'harga' => $request->harga,
+                'harga_min' => $request->harga_min,
+                'harga_max' => $request->harga_max,
+                'harga_coret' => $request->harga_coret,
+                'diskon' => $request->diskon,
+                'alias' => $request->alias,
+                'tags' => $request->tags,
+                'tampil' => $request->tampil,
+                'gambar_utama' => is_string($request->gambar_utama) ? $request->gambar_utama : '',
+                'panduan_ukuran' => is_string($request->panduan_ukuran) ? $request->panduan_ukuran : ''
             ];
 
-            // Update or Create gambar
-            $gambarResult = $this->global->store($gambarModel, $gambarId, $gambarData);
+            // Update or Create data
 
-            // Upload image gambar
-            if ($value != $gambarResult->gambar && count($value) > 0) {
-                $this->global->upload(
-                    'image/produk/' . $generateId,
-                    $value['gambar'],
-                    $gambarResult,
-                    'gambar',
-                    $gambarGenerateId . $key,
-                    'gambar'
-                );
-            }
-        }
+            $result = $this->global->store($this->model, $id, $data);
 
-        // Foreach Varian
-        foreach ($request->varian as $varianKey => $valueVarian) {
-            $varianModel = new ProdukVarian();
-            $varianGenerateId = $valueVarian['id'] ? $valueVarian['id'] : Str::orderedUuid();
-            $varianId = ['id' => $varianGenerateId];
-
-            $varianData = [
-                'id' => $varianGenerateId,
-                'id_produk' => $generateId,
-                'nama' => $valueVarian['nama'],
-            ];
-
-            // Update or create varian
-            $this->global->store($varianModel, $varianId, $varianData);
-
-            // Foreach Pilihan
-            foreach ($valueVarian['pilihan'] as $pilihanKey => $valuePilihan) {
-                $pilihanModel = new ProdukVarianPilihan();
-                $pilihanGenerateId = $request->id ? $request->id : Str::orderedUuid();
-                $pilihanId = ['id' => $pilihanGenerateId];
-
-                $pilihanData = [
-                    'id' => $pilihanGenerateId,
-                    'id_produk_varian' => $varianGenerateId,
-                    'nama' => $valuePilihan['nama'],
-                    'harga' => $valuePilihan['harga'],
-                    'harga_seller' => $valuePilihan['harga_seller'],
-                    'stok' => $valuePilihan['stok'],
-                ];
-
-                // Update or create pilihan
-                $pilihanResult = $this->global->store($pilihanModel, $pilihanId, $pilihanData);
-
-                // Upload pilihan image
-                if ($valuePilihan != $pilihanResult->gambar && count($valuePilihan) > 0) {
-                    $this->global->upload('image/produk/' . $generateId, $valuePilihan['gambar'], $pilihanResult, 'gambar', $pilihanGenerateId . $pilihanKey, 'pilihan');
+            // Upload Image
+            if (!is_string($request->gambar_utama)) {
+                if ($request->gambar_utama != $result->gambar_utama && count($request->gambar_utama) > 0) {
+                    $this->global->upload(
+                        'image/produk/' . $result->id,
+                        $request->gambar_utama,
+                        $result,
+                        'gambar_utama',
+                        $generateId,
+                        'utama'
+                    );
                 }
             }
-        }
 
-        return response()->json([
-            'data' => true
-        ]);
+            if (!is_string($request->panduan_ukuran)) {
+                if ($request->panduan_ukuran != $result->panduan_ukuran && count($request->panduan_ukuran) > 0) {
+                    $this->global->upload(
+                        'image/produk/' . $result->id,
+                        $request->panduan_ukuran,
+                        $result,
+                        'panduan_ukuran',
+                        $generateId,
+                        'panduan_ukuran'
+                    );
+                }
+            }
+
+            // Foreach gambar
+            foreach ($request->produk_gambar as $key => $value) {
+                $gambarModel = new ProdukGambar();
+                $gambarGenerateId = $value['id'] ? $value['id'] : Str::orderedUuid();
+                $gambarId = ['id' => $gambarGenerateId];
+
+                $gambarData = [
+                    'id' => $gambarGenerateId,
+                    'id_produk' => $generateId,
+                    'gambar' => is_string($value['gambar']) ? $value['gambar'] : ''
+                ];
+
+                // Update or Create gambar
+                $gambarResult = $this->global->store($gambarModel, $gambarId, $gambarData);
+
+                // Upload image gambar
+                if (!is_string($value['gambar'])) {
+                    if ($value['gambar'] != $gambarResult->gambar && count($value) > 0) {
+                        $this->global->upload(
+                            'image/produk/' . $generateId,
+                            $value['gambar'],
+                            $gambarResult,
+                            'gambar',
+                            $gambarGenerateId . $key,
+                            'gambar'
+                        );
+                    }
+                }
+            }
+
+            $seleksiArr = array();
+
+            foreach ($request->produk_seleksi as $key => $valueSeleksi) {
+                $seleksiModel = new ProdukSeleksi();
+                $seleksiGenerateId = $valueSeleksi['id'] ? $valueSeleksi['id'] : Str::orderedUuid();
+                $seleksiId = ['id' => $seleksiGenerateId];
+
+                array_push($seleksiArr, strval($seleksiGenerateId));
+
+                $seleksiData = [
+                    'id' => $seleksiGenerateId,
+                    'nama' => $valueSeleksi['nama'],
+                ];
+
+                // Update or Create seleksi
+                $this->global->store($seleksiModel, $seleksiId, $seleksiData);
+            }
+
+            // Foreach Varian
+            foreach ($request->produk_varian as $varianKey => $valueVarian) {
+                $varianModel = new ProdukVarian();
+                $varianGenerateId = $valueVarian['id'] ? $valueVarian['id'] : Str::orderedUuid();
+                $varianId = ['id' => $varianGenerateId];
+
+                $varianData = [
+                    'id' => $varianGenerateId,
+                    'id_produk' => $generateId,
+                    'id_seleksi' => count($seleksiArr) > 0 ? $seleksiArr[0] : '',
+                    'nama' => $valueVarian['nama'],
+                    'gambar' => is_string($valueVarian['gambar']) ? $valueVarian['gambar'] : '',
+                ];
+
+                // Update or create varian
+                $VarianResult = $this->global->store($varianModel, $varianId, $varianData);
+
+                if (!is_string($valueVarian['gambar'])) {
+                    if ($valueVarian['gambar'] != $VarianResult->gambar && count($valueVarian) > 0) {
+                        $this->global->upload('image/produk/' . $generateId, $valueVarian['gambar'], $VarianResult, 'gambar', $varianGenerateId . Str::orderedUuid(), 'pilihan');
+                    }
+                }
+
+                // Foreach Pilihan
+                foreach ($valueVarian['produk_varian_pilihan'] as $pilihanKey => $valuePilihan) {
+                    $pilihanModel = new ProdukVarianPilihan();
+                    $pilihanGenerateId = $valuePilihan['id'] ? $valuePilihan['id'] : Str::orderedUuid();
+                    $pilihanId = ['id' => $pilihanGenerateId];
+
+                    $pilihanData = [
+                        'id' => $pilihanGenerateId,
+                        'id_produk_varian' => $varianGenerateId,
+                        'nama' => $valuePilihan['nama'],
+                        'harga' => $valuePilihan['harga'],
+                        'harga_coret' => $valuePilihan['harga_coret'],
+                        'harga_seller' => $valuePilihan['harga_seller'],
+                        'id_seleksi' => count($seleksiArr) > 1 ? $seleksiArr[1] : '',
+                        'id_produk' => $generateId,
+                        'stok' => $valuePilihan['stok'],
+                        'tampil' => $valuePilihan['tampil'],
+                    ];
+
+                    // Update or create pilihan
+                    $this->global->store($pilihanModel, $pilihanId, $pilihanData);
+                }
+            }
+
+            return response()->json([
+                'data' => true
+            ]);
+        } catch (\Throwable $th) {
+            try {
+                $variant = ProdukSeleksi::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                $variant = ProdukVarian::where('id_produk', $request->id)->pluck('id')->toArray();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukVarianPilihan::whereIn('id_produk_varian', $variant)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukVarian::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukGambar::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                ProdukUlasan::where('id_produk', $request->id)->delete();
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+            try {
+                $this->model->destroy($request->id);
+            } catch (\Throwable $th) {
+                //throw $th;
+            }
+
+            http_response_code(500);
+        }
     }
 
     public function destroy(Request $request)
@@ -219,6 +336,15 @@ class ProdukController extends Controller
         ]);
     }
 
+    public function ishide(Request $request)
+    {
+        $data = Produk::where('id', $request->id)->update(['tampilas' => $request->tampil]);
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
     public function get(Request $request)
     {
         $data = Produk::select('id as value', 'nama as text')->get();
@@ -230,10 +356,17 @@ class ProdukController extends Controller
 
     public function getId(Request $request)
     {
-        $data = Produk::select('id as value', 'nama as text')->where('id', $request->id)->get();
+        $data = Produk::with(['produkGambar', 'produkVarian.produkVarianPilihan'])->where('id', $request->id)->first();
+
+        $seleksi = ProdukSeleksi::whereHas('produkVarian', function ($query) use ($request) {
+            return $query->where('id_produk', $request->id);
+        })->orWhereHas('produkVarianPilihan', function ($query) use ($request) {
+            return $query->where('id_produk', $request->id);
+        })->get();
 
         return response()->json([
-            'data' => $data
+            'data' => $data,
+            'seleksi' => $seleksi
         ]);
     }
 }

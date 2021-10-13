@@ -81,6 +81,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('delete-multiple', 'master\ProdukController@destroys');
         Route::get('get', 'master\ProdukController@get');
         Route::get('get-id', 'master\ProdukController@getId');
+        Route::post('ishide', 'master\ProdukController@ishide');
     });
     Route::prefix('produk-gambar')->group(function () {
         Route::get('/', 'master\ProdukGambarController@index');
