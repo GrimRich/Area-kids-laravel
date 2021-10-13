@@ -14,7 +14,7 @@ class Produk extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'alias', 'tags', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'alias', 'tags', 'panduan_ukuran', 'harga_min', 'harga_max', 'tampil', 'created_at', 'updated_at'];
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
     {
@@ -32,10 +32,12 @@ class Produk extends Model
     {
         return $this->hasMany(ProdukGambar::class, 'id_produk');
     }
+
     public function produkVarian()
     {
         return $this->hasMany(ProdukVarian::class, 'id_produk');
     }
+
     public function produkUlasan()
     {
         return $this->hasMany(ProdukUlasan::class, 'id_produk');
