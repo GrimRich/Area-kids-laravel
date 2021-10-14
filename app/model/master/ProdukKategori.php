@@ -28,4 +28,9 @@ class ProdukKategori extends Model
     {
         return $this->hasMany(Produk::class, 'id_kategori');
     }
+
+    public function banner()
+    {
+        return $this->hasMany(Banner::class, 'id_produk_kategori');
+    }
 }

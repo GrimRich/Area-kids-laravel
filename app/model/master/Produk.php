@@ -42,4 +42,9 @@ class Produk extends Model
     {
         return $this->hasMany(ProdukUlasan::class, 'id_produk');
     }
+
+    public function banner()
+    {
+        return $this->hasMany(Banner::class, 'id_produk');
+    }
 }

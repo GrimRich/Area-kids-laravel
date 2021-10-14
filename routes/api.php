@@ -39,6 +39,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('update-or-create', 'master\BannerController@updateOrCreate');
         Route::post('delete', 'master\BannerController@destroy');
         Route::post('delete-multiple', 'master\BannerController@destroys');
+        Route::post('ishide', 'master\BannerController@ishide');
         Route::get('get', 'master\BannerController@get');
         Route::get('get-id', 'master\BannerController@getId');
     });

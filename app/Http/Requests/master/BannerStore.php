@@ -24,7 +24,7 @@ class BannerStore extends FormRequest
     public function rules()
     {
         return [
-            //
+            'gambar' => 'required'
         ];
     }
 }

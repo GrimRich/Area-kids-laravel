@@ -334,7 +334,7 @@ class ProdukController extends Controller
 
     public function ishide(Request $request)
     {
-        $data = Produk::where('id', $request->id)->update(['tampilas' => $request->tampil]);
+        $data = Produk::where('id', $request->id)->update(['tampil' => $request->tampil]);
 
         return response()->json([
             'data' => $data
@@ -343,7 +343,7 @@ class ProdukController extends Controller
 
     public function get(Request $request)
     {
-        $data = Produk::select('id as value', 'nama as text')->get();
+        $data = Produk::select('id as value', 'nama as text', 'gambar_utama')->get();
 
         return response()->json([
             'data' => $data
