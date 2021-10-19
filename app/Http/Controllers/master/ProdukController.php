@@ -29,7 +29,7 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
-        $fields = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'harga_min', 'harga_max', 'alias', 'tags', 'tampil'];
+        $fields = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'harga_min', 'harga_max', 'alias', 'tags', 'tampil', 'nama_variasi'];
         $withCount = $this->withCount;
         $relations = [];
         $where = [];
@@ -109,7 +109,8 @@ class ProdukController extends Controller
                 'tags' => $request->tags,
                 'tampil' => $request->tampil,
                 'gambar_utama' => is_string($request->gambar_utama) ? $request->gambar_utama : '',
-                'panduan_ukuran' => is_string($request->panduan_ukuran) ? $request->panduan_ukuran : ''
+                'panduan_ukuran' => is_string($request->panduan_ukuran) ? $request->panduan_ukuran : '',
+                'nama_variasi' => $request->nama_variasi,
             ];
 
             // Update or Create data
@@ -179,19 +180,21 @@ class ProdukController extends Controller
             $seleksiArr = array();
 
             foreach ($request->produk_seleksi as $key => $valueSeleksi) {
-                $seleksiModel = new ProdukSeleksi();
-                $seleksiGenerateId = $valueSeleksi['id'] ? $valueSeleksi['id'] : Str::orderedUuid();
-                $seleksiId = ['id' => $seleksiGenerateId];
+                if ($valueSeleksi['nama']) {
+                    $seleksiModel = new ProdukSeleksi();
+                    $seleksiGenerateId = $valueSeleksi['id'] ? $valueSeleksi['id'] : Str::orderedUuid();
+                    $seleksiId = ['id' => $seleksiGenerateId];
 
-                array_push($seleksiArr, strval($seleksiGenerateId));
+                    array_push($seleksiArr, strval($seleksiGenerateId));
 
-                $seleksiData = [
-                    'id' => $seleksiGenerateId,
-                    'nama' => $valueSeleksi['nama'],
-                ];
+                    $seleksiData = [
+                        'id' => $seleksiGenerateId,
+                        'nama' => $valueSeleksi['nama'],
+                    ];
 
-                // Update or Create seleksi
-                $this->global->store($seleksiModel, $seleksiId, $seleksiData);
+                    // Update or Create seleksi
+                    $this->global->store($seleksiModel, $seleksiId, $seleksiData);
+                }
             }
 
             // Foreach Varian

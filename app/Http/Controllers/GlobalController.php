@@ -184,6 +184,15 @@ class GlobalController extends Controller
         return true;
     }
 
+    public function deleteUpload($url)
+    {
+        $size = ['original', 'xsmall', 'small', 'large'];
+
+        foreach ($size as $index => $item) {
+            Storage::delete(str_replace("original", $item, $url));
+        }
+    }
+
     public function createThumbnail($path, $width, $height)
     {
         $img = Image::make($path)->resize($width, $height, function ($constraint) {

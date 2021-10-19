@@ -19,7 +19,7 @@ class BannerController extends Controller
     {
         $this->model = new Banner();
         $this->global = new GlobalController();
-        $this->withCount = ['produk', 'produkKategori'];
+        $this->withCount = [];
     }
 
     public function index(Request $request)
@@ -48,7 +48,6 @@ class BannerController extends Controller
         $generateId = $request->id ? $request->id : Str::orderedUuid();
         $id = ['id' => $generateId];
         $data = [
-            'gambar' => $request->gambar,
             'link' => $request->link,
             'id_produk' => $request->id_produk,
             'id_produk_kategori' => $request->id_produk_kategori,
