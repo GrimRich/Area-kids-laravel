@@ -14,7 +14,19 @@ class Produk extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'alias', 'tags', 'panduan_ukuran', 'harga_min', 'harga_max', 'tampil', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'id_kategori', 'nama', 'deskripsi', 'gambar_utama', 'stok', 'berat', 'harga', 'harga_coret', 'diskon', 'alias', 'tags', 'panduan_ukuran', 'harga_min', 'harga_max', 'tampil', 'created_at', 'updated_at', 'nama_variasi'];
+
+    protected $appends = array('option_one', 'option_two');
+    
+    public function getOptionOneAttribute()
+    {
+        return count(explode(",", $this->nama_variasi)) > 0 ? explode(",", $this->nama_variasi)[0] : '';
+    }
+
+    public function getOptionTwoAttribute()
+    {
+        return count(explode(",", $this->nama_variasi)) > 1 ? explode(",", $this->nama_variasi)[1] : '';
+    }
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
     {
