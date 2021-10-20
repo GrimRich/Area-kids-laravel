@@ -66,6 +66,7 @@ class BannerController extends Controller
                     $result,
                     'gambar',
                     $generateId,
+                    'Banner'
                 );
             }
         }
@@ -84,7 +85,8 @@ class BannerController extends Controller
             'status' => $status
         ]);
 
-        else return response('Internal Server Error', false);
+        else return response()->json([
+        'message' => 'Error'], 200);
     }
 
     public function destroys(Request $request)

@@ -61,7 +61,9 @@ class ProvinsiController extends Controller
             'status' => $status
         ]);
 
-        else return response('Internal Server Error', false);
+        else return response()->json([
+            'message' => 'Error'
+        ], 200);
     }
 
     public function destroys(Request $request)
