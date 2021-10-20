@@ -81,12 +81,12 @@ class BannerController extends Controller
 
         $status = $this->global->destroy($this->model, $parameter, $withCount);
 
-        if ($status) return response()->json([
+        return response()->json([
             'status' => $status
         ]);
 
-        else return response()->json([
-        'message' => 'Error'], 200);
+        // else return response()->json([
+        // 'message' => 'Error'], 200);
     }
 
     public function destroys(Request $request)
