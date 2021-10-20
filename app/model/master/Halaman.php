@@ -32,4 +32,9 @@ class Halaman extends Model
     {
         return $this->hasMany(Submenu::class, 'id_halaman');
     }
+
+    public function banner()
+    {
+        return $this->hasMany(Banner::class, 'id_halaman');
+    }
 }

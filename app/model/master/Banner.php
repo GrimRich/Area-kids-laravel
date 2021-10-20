@@ -14,7 +14,7 @@ class Banner extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'link', 'id_produk', 'id_produk_kategori', 'gambar', 'tampil', 'tipe'];
+    protected $fillable = ['id', 'link', 'id_produk', 'id_produk_kategori', 'gambar', 'tampil', 'tipe', 'id_halaman'];
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
     {
@@ -31,5 +31,10 @@ class Banner extends Model
     public function produkKategori()
     {
         return $this->belongsTo(ProdukKategori::class, 'id_produk_kategori');
+    }
+
+    public function halaman()
+    {
+        return $this->belongsTo(Halaman::class, 'id_halaman');
     }
 }

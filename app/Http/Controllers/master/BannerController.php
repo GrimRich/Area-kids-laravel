@@ -26,13 +26,15 @@ class BannerController extends Controller
     {
         $fields = ['id', 'link', 'id_produk', 'id_produk_kategori', 'gambar', 'tampil', 'tipe'];
         $withCount = $this->withCount;
-        $relations = ['produk', ['id', 'nama'], 'produkKategori', ['id', 'nama']];
+        $relations = ['produk', ['id', 'nama'], 'produkKategori', ['id', 'nama'], 'halaman', ['id', 'nama']];
         $where = [];
         $has = [];
         $doesntHave = [];
         $with = ['produk' => function ($query) {
             $query->select('id', 'nama', 'gambar_utama');
         }, 'produkKategori' => function ($query) {
+            $query->select('id', 'nama');
+        }, 'halaman' => function ($query) {
             $query->select('id', 'nama');
         }];
 
