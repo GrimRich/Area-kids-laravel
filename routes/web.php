@@ -13,6 +13,6 @@ Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:cache');
 });
 
-Route::get('/storage-links', function () {
+Route::get('/storage-link', function () {
     $exitCode = Artisan::call('storage:link');
 });

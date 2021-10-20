@@ -195,9 +195,20 @@ class GlobalController extends Controller
 
     public function createThumbnail($path, $width, $height)
     {
-        $img = Image::make($path)->resize($width, $height, function ($constraint) {
-            $constraint->aspectRatio();
-        });
-        $img->save($path);
+        $flag = true;
+        $try = 1;
+
+        while ($flag && $try <= 10) :
+            try {
+                $img = Image::make($path)->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                });
+                $img->save($path);
+                $flag = false;
+            } catch (\Exception $e) {
+                //not throwing  error when exception occurs
+            }
+            $try++;
+        endwhile;
     }
 }

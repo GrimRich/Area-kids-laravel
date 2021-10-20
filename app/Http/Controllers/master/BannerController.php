@@ -95,9 +95,9 @@ class BannerController extends Controller
         $success = 0;
         $fail = 0;
         foreach ($request->item as $key => $value) {
-            $valueDecode = json_decode($value, true);
+            // $valueDecode = json_decode($value, true);
 
-            $parameter = ['id' => $valueDecode['id']];
+            $parameter = ['id' => $value['id']];
 
             $result = $this->global->destroy($this->model, $parameter, $this->withCount);
 
