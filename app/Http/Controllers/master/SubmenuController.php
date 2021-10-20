@@ -27,7 +27,7 @@ class SubmenuController extends Controller
         $fields = ['id', 'id_menu', 'nama', 'warna', 'url', 'id_halaman', 'tipe', 'blank', 'id_kategori_produk'];
         $withCount = $this->withCount;
         $relations = [['halaman', ['id', 'nama']], ['kategoriProduk', ['id', 'nama']], ['menu', ['id', 'nama']]];
-        $where = [['is_footer', '=', '0']];
+        $where = [];
         $has = [];
         $doesntHave = [];
         $with =

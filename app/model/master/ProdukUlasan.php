@@ -34,7 +34,7 @@ class ProdukUlasan extends Model
         return $this->belongsTo(Member::class, 'id_member');
     }
 
-    public function id_badge()
+    public function badge()
     {
         return $this->belongsTo(Badge::class, 'id_badge');
     }
