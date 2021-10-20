@@ -63,7 +63,7 @@ class GlobalController extends Controller
 
                 if (count($sortBy) > 0) {
                     for ($i = 0; $i < count($sortBy); $i++) {
-                        return $query->orderBy($sortBy[$i], $sortDesc[$i] ? 'desc' : 'asc');
+                        return $query->orderBy($sortBy[$i], $sortDesc[$i] == "true" ? 'desc' : 'asc');
                     }
                 }
             })
