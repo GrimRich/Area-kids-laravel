@@ -32,4 +32,9 @@ class Menu extends Model
     {
         return $this->belongsTo(ProdukKategori::class, 'id_kategori');
     }
+
+    public function submmenu()
+    {
+        return $this->hasMany(Submenu::class, 'id_menu');
+    }
 }

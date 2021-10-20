@@ -11,7 +11,7 @@ use Intervention\Image\Facades\Image;
 
 class GlobalController extends Controller
 {
-    public function index($model, $request, $fields, $with, $withCount, $relations, $where = [], $has = [], $doesntHave = [])
+    public function index($model, $request, $fields, $with, $withCount, $relations, $where = [], $has = [], $doesntHave = [], $whereNull = [])
     {
         $search = $request->search;
 
@@ -47,6 +47,13 @@ class GlobalController extends Controller
                 if (count($has) > 0) {
                     foreach ($has as $item) {
                         $query->whereHas($item);
+                    }
+                }
+            })
+            ->where(function ($query) use ($whereNull) {
+                if (count($whereNull) > 0) {
+                    foreach ($whereNull as $item) {
+                        $query->whereNull($item);
                     }
                 }
             })
