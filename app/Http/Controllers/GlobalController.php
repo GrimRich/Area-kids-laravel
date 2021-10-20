@@ -195,7 +195,7 @@ class GlobalController extends Controller
 
     public function createThumbnail($path, $width, $height)
     {
-        $img = Image::make($path->getRealPath())->resize($width, $height, function ($constraint) {
+        $img = Image::make($path)->resize($width, $height, function ($constraint) {
             $constraint->aspectRatio();
         });
         $img->save($path);
