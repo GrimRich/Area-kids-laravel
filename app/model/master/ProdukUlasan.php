@@ -26,6 +26,16 @@ class ProdukUlasan extends Model
 
     public function produk()
     {
-        return $this->hasMany(Produk::class, 'id_kategori');
+        return $this->belongsTo(Produk::class, 'id_produk');
+    }
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'id_member');
+    }
+
+    public function id_badge()
+    {
+        return $this->belongsTo(Badge::class, 'id_badge');
     }
 }

@@ -26,11 +26,19 @@ class ProdukUlasanController extends Controller
     {
         $fields = ['id', 'id_produk', 'id_member', 'deskripsi', 'review', 'gambar', 'id_badge'];
         $withCount = $this->withCount;
-        $relations = [];
+        $relations =
+            [['produk', ['id', 'nama']], ['member', ['id', 'nama']], ['id_badge', ['id', 'nama']]];
         $where = $request->id_produk ? [['id_produk', '=', $request->id_produk]] : [];
         $has = [];
         $doesntHave = [];
-        $with = [];
+        $with =
+            ['produk' => function ($query) {
+                $query->select('id', 'nama');
+            }, 'member' => function ($query) {
+                $query->select('id', 'nama');
+            }, 'badge' => function ($query) {
+                $query->select('id', 'nama');
+            }];
 
         $data = $this->global->index($this->model, $request, $fields, $with, $withCount, $relations, $where, $has, $doesntHave);
 
