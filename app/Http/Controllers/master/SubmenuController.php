@@ -24,7 +24,7 @@ class SubmenuController extends Controller
 
     public function index(Request $request)
     {
-        $fields = ['id', 'id_menu', 'nama', 'warna', 'url', 'id_halaman', 'tipe', 'blank', 'id_kategori_produk', 'is_footer', 'tipe_footer'];
+        $fields = ['id', 'id_menu', 'nama', 'warna', 'url', 'id_halaman', 'tipe', 'blank', 'id_kategori_produk'];
         $withCount = $this->withCount;
         $relations = [['halaman', ['id', 'nama']], ['kategoriProduk', ['id', 'nama']], ['menu', ['id', 'nama']]];
         $where = [['is_footer', '=', '0']];
@@ -58,8 +58,6 @@ class SubmenuController extends Controller
             'blank' => $request->blank,
             'id_kategori_produk' => $request->id_kategori_produk,
             'id_menu' => $request->id_menu,
-            'is_footer' => $request->is_footer,
-            'tipe_footer' => $request->tipe_footer,
         ];
 
         $result = $this->global->store($this->model, $id, $data);
