@@ -336,7 +336,6 @@ class ProdukController extends Controller
 
         $parameter = ['id' => $request->id];
         $withCount = $this->withCount;
-        var_dump($withCount);
 
         $status = $this->global->destroy($this->model, $parameter, $withCount);
 

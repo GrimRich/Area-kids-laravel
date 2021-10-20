@@ -112,7 +112,7 @@ class GlobalController extends Controller
             }
         }
 
-        var_dump($count);
+
 
         if (count($withCount) === $count) {
             $data->delete();
