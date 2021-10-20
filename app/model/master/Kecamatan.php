@@ -35,6 +35,6 @@ class Kecamatan extends Model
 
     public function kodePos()
     {
-        return $this->hasMany(KodePos::class, 'id_provinsi');
+        return $this->hasMany(KodePos::class, 'id_kecamatan');
     }
 }

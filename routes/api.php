@@ -34,6 +34,46 @@ Route::middleware('auth:api')->group(function () {
         Route::get('get', 'master\BankController@get');
         Route::get('get-id', 'master\BankController@getId');
     });
+    Route::prefix('menu')->group(function () {
+        Route::get('/', 'master\MenuController@index');
+        Route::post('update-or-create', 'master\MenuController@updateOrCreate');
+        Route::post('delete', 'master\MenuController@destroy');
+        Route::post('delete-multiple', 'master\MenuController@destroys');
+        Route::get('get', 'master\MenuController@get');
+        Route::get('get-id', 'master\MenuController@getId');
+    });
+    Route::prefix('submenu')->group(function () {
+        Route::get('/', 'master\SubmenuController@index');
+        Route::post('update-or-create', 'master\SubmenuController@updateOrCreate');
+        Route::post('delete', 'master\SubmenuController@destroy');
+        Route::post('delete-multiple', 'master\SubmenuController@destroys');
+        Route::get('get', 'master\SubmenuController@get');
+        Route::get('get-id', 'master\SubmenuController@getId');
+    });
+    Route::prefix('link-penting')->group(function () {
+        Route::get('/', 'master\MenuController@indexLinkPenting');
+        Route::post('update-or-create', 'master\MenuController@updateOrCreate');
+        Route::post('delete', 'master\MenuController@destroy');
+        Route::post('delete-multiple', 'master\MenuController@destroys');
+        Route::get('get', 'master\MenuController@get');
+        Route::get('get-id', 'master\MenuController@getId');
+    });
+    Route::prefix('discover')->group(function () {
+        Route::get('/', 'master\MenuController@indexDiscover');
+        Route::post('update-or-create', 'master\MenuController@updateOrCreate');
+        Route::post('delete', 'master\MenuController@destroy');
+        Route::post('delete-multiple', 'master\MenuController@destroys');
+        Route::get('get', 'master\MenuController@get');
+        Route::get('get-id', 'master\MenuController@getId');
+    });
+    Route::prefix('halaman')->group(function () {
+        Route::get('/', 'master\HalamanController@index');
+        Route::post('update-or-create', 'master\HalamanController@updateOrCreate');
+        Route::post('delete', 'master\HalamanController@destroy');
+        Route::post('delete-multiple', 'master\HalamanController@destroys');
+        Route::get('get', 'master\HalamanController@get');
+        Route::get('get-id', 'master\HalamanController@getId');
+    });
     Route::prefix('banner')->group(function () {
         Route::get('/', 'master\BannerController@index');
         Route::post('update-or-create', 'master\BannerController@updateOrCreate');
@@ -77,7 +117,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::prefix('produk')->group(function () {
         Route::get('/', 'master\ProdukController@index');
-        Route::post('update-or-create', 'master\ProdukController@updateOrCreate');
+        Route::post('produk/update-or-create', 'master\ProdukController@updateOrCreate');
         Route::post('delete', 'master\ProdukController@destroy');
         Route::post('delete-multiple', 'master\ProdukController@destroys');
         Route::get('get', 'master\ProdukController@get');

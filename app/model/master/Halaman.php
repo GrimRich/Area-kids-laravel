@@ -1,12 +1,12 @@
 <?php
 
-namespace App\model\transaksi;
+namespace App\model\master;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MetodeBayar extends Model
+class Halaman extends Model
 {
-    protected $table = 'trn_metode_bayar';
+    protected $table = 'mas_halaman';
 
     protected $primaryKey = 'id';
 
@@ -14,7 +14,7 @@ class MetodeBayar extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'id_invoice', 'bank', 'nama', 'no_rekening'];
+    protected $fillable = ['id', 'nama', 'isi', 'url', 'static'];
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
     {
@@ -23,8 +23,13 @@ class MetodeBayar extends Model
         return $query;
     }
 
-    public function invoice()
+    public function menu()
     {
-        return $this->belongsTo(Invoice::class, 'id_invoice');
+        return $this->hasMany(Menu::class, 'id_halaman');
+    }
+
+    public function submenu()
+    {
+        return $this->hasMany(Submenu::class, 'id_halaman');
     }
 }

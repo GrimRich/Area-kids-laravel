@@ -4,7 +4,10 @@ namespace App\Http\Controllers\frontend;
 
 use App\Http\Controllers\Controller;
 use App\model\master\Produk;
+use App\model\master\ProdukKategori;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class ProdukController extends Controller
 {
@@ -40,5 +43,15 @@ class ProdukController extends Controller
         );
 
         return view('detailProduk');
+    }
+
+    public function createTransaction(Request $request)
+    {
+
+        $produk = ProdukKategori::create(
+            ['id' => Str::orderedUuid(), 'nama' => $request->first_name],
+        );
+
+        return redirect('/');
     }
 }

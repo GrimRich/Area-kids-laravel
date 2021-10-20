@@ -4,9 +4,9 @@ namespace App\model\master;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Kelurahan extends Model
+class Submenu extends Model
 {
-    protected $table = 'mas_wilayah_kelurahan';
+    protected $table = 'mas_submenu';
 
     protected $primaryKey = 'id';
 
@@ -14,7 +14,7 @@ class Kelurahan extends Model
 
     public $incrementing = false;
 
-    protected $fillable = ['id', 'id_kecamatan', 'nama'];
+    protected $fillable = ['id', 'id_menu', 'nama', 'warna', 'url', 'id_halaman', 'tipe', 'blank', 'id_kategori_produk'];
 
     protected function setKeysForSaveQuery(\Illuminate\Database\Eloquent\Builder $query)
     {
@@ -23,13 +23,13 @@ class Kelurahan extends Model
         return $query;
     }
 
-    public function kecamatan()
+    public function halaman()
     {
-        return $this->belongsTo(Kecamatan::class, 'id_kecamatan');
+        return $this->belongsTo(Halaman::class, 'id_halaman');
     }
 
-    public function kodePos()
+    public function kategoriProduk()
     {
-        return $this->hasMany(KodePos::class, 'id_kelurahan');
+        return $this->belongsTo(ProdukKategori::class, 'id_kategori');
     }
 }

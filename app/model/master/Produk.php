@@ -2,6 +2,7 @@
 
 namespace App\model\master;
 
+use App\model\transaksi\Produk as TransaksiProduk;
 use Illuminate\Database\Eloquent\Model;
 
 class Produk extends Model
@@ -50,6 +51,11 @@ class Produk extends Model
         return $this->hasMany(ProdukVarian::class, 'id_produk');
     }
 
+    public function produkVarianPilihan()
+    {
+        return $this->hasMany(ProdukVarianPilihan::class, 'id_produk');
+    }
+
     public function produkUlasan()
     {
         return $this->hasMany(ProdukUlasan::class, 'id_produk');
@@ -58,5 +64,15 @@ class Produk extends Model
     public function banner()
     {
         return $this->hasMany(Banner::class, 'id_produk');
+    }
+
+    public function produkPenjualan()
+    {
+        return $this->hasMany(ProdukPenjualan::class, 'id_produk');
+    }
+
+    public function produkTransaksi()
+    {
+        return $this->hasMany(TransaksiProduk::class, 'id_produk');
     }
 }

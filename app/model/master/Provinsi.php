@@ -32,4 +32,9 @@ class Provinsi extends Model
     {
         return $this->hasMany(KodePos::class, 'id_provinsi');
     }
+
+    public function memberAlamat()
+    {
+        return $this->hasMany(MemberAlamat::class, 'id_provinsi');
+    }
 }

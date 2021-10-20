@@ -2,6 +2,7 @@
 
 namespace App\model\master;
 
+use App\model\transaksi\Alamat;
 use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
@@ -26,5 +27,15 @@ class Member extends Model
     public function memberAlamat()
     {
         return $this->hasMany(MemberAlamat::class, 'id_member');
+    }
+
+    public function produkUlasan()
+    {
+        return $this->hasMany(ProdukUlasan::class, 'id_member');
+    }
+
+    public function alamat()
+    {
+        return $this->hasMany(Alamat::class, 'id_member');
     }
 }

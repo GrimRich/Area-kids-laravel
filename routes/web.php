@@ -9,6 +9,8 @@ Route::get('/', [ProdukController::class, 'produkBaru']);
 
 Route::get('/detail/{alias}', [ProdukController::class, 'produkDetail']);
 
+Route::post('/post-data', [ProdukController::class, 'createTransaction']);
+
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('config:cache');
 });
