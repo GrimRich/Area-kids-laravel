@@ -30,10 +30,10 @@ class Menu extends Model
 
     public function kategoriProduk()
     {
-        return $this->belongsTo(ProdukKategori::class, 'id_kategori');
+        return $this->belongsTo(ProdukKategori::class, 'id_kategori_produk');
     }
 
-    public function submenu()
+    public function submenuItems()
     {
         return $this->hasMany(Submenu::class, 'id_menu');
     }

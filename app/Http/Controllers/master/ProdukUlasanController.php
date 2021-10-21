@@ -33,7 +33,7 @@ class ProdukUlasanController extends Controller
         $doesntHave = [];
         $with =
             ['produk' => function ($query) {
-                $query->select('id', 'nama');
+                $query->select('id', 'nama', 'gambar_utama');
             }, 'member' => function ($query) {
                 $query->select('id', 'nama');
             }, 'badge' => function ($query) {
@@ -85,7 +85,7 @@ class ProdukUlasanController extends Controller
         $success = 0;
         $fail = 0;
         foreach ($request->item as $key => $value) {
-            $valueDecode = json_decode($value, true);
+            $valueDecode = $value;
 
             $parameter = ['id' => $valueDecode['id']];
 

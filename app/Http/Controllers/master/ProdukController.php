@@ -171,9 +171,6 @@ class ProdukController extends Controller
                             'gambar' => is_string($value['gambar']) ? $value['gambar'] : ''
                         ];
 
-                        if (!is_string($value['gambar']) && $value['id']) {
-                        }
-
                         // Update or Create gambar
                         $gambarResult = $this->global->store($gambarModel, $gambarId, $gambarData);
 
@@ -349,7 +346,7 @@ class ProdukController extends Controller
         $success = 0;
         $fail = 0;
         foreach ($request->item as $key => $value) {
-            $valueDecode = json_decode($value, true);
+            $valueDecode = $value;
 
             $variant = ProdukVarian::where('id_produk', $valueDecode['id'])->pluck('id')->toArray();
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\GlobalController;
 use App\Http\Requests\master\MenuStore;
 use Illuminate\Support\Str;
 use App\model\master\Menu;
+use App\model\master\Submenu;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -19,7 +20,7 @@ class MenuController extends Controller
     {
         $this->model = new Menu;
         $this->global = new GlobalController();
-        $this->withCount = ['submenu'];
+        $this->withCount = ['submenuItems'];
     }
 
     public function index(Request $request)
@@ -90,6 +91,17 @@ class MenuController extends Controller
 
     public function updateOrCreate(MenuStore $request)
     {
+        try {
+            Submenu::where('id_menu', $request->id)->delete();
+        } catch (\Throwable $th) {
+            print($th);
+        }
+        try {
+            $this->model->destroy($request->id);
+        } catch (\Throwable $th) {
+            print($th);
+        }
+
         $id = ['id' => $request->id ? $request->id : Str::orderedUuid()];
         $data = [
             'nama' => $request->nama,
@@ -104,6 +116,32 @@ class MenuController extends Controller
             'tipe_footer' => $request->tipe_footer,
         ];
 
+        try {
+            if ($request->submenu == "1") {
+                foreach ($request->submenu_items as $key => $value) {
+                    if ($value['nama']) {
+                        $submenuModel = new Submenu();
+                        $submenuGenerateId = $value['id'] ? $value['id'] : Str::orderedUuid();
+                        $submenuId = ['id' => $submenuGenerateId];
+
+                        $submenuData = [
+                            'nama' => $value['nama'],
+                            'warna' => $value['warna'],
+                            'url' => $value['url'],
+                            'id_halaman' => $value['id_halaman'],
+                            'tipe' => $value['tipe'],
+                            'blank' => $value['blank'],
+                            'id_kategori_produk' => $value['id_kategori_produk'],
+                            'id_menu' => $value['id_menu'],
+                        ];
+
+                        $this->global->store($submenuModel, $submenuId, $submenuData);
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+        }
+
         $result = $this->global->store($this->model, $id, $data);
 
         return $result;
@@ -111,6 +149,8 @@ class MenuController extends Controller
 
     public function destroy(Request $request)
     {
+        Submenu::where('id_menu', $request->id)->delete();
+
         $parameter = ['id' => $request->id];
         $withCount = $this->withCount;
 
@@ -130,7 +170,11 @@ class MenuController extends Controller
         $success = 0;
         $fail = 0;
         foreach ($request->item as $key => $value) {
-            $valueDecode = json_decode($value, true);
+
+
+            $valueDecode = $value;
+
+            Submenu::where('id_menu', $valueDecode['id'])->delete();
 
             $parameter = ['id' => $valueDecode['id']];
 

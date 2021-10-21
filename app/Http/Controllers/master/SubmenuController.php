@@ -86,7 +86,7 @@ class SubmenuController extends Controller
         $success = 0;
         $fail = 0;
         foreach ($request->item as $key => $value) {
-            $valueDecode = json_decode($value, true);
+            $valueDecode = $value;
 
             $parameter = ['id' => $valueDecode['id']];
 
