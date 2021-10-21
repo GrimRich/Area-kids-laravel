@@ -36,7 +36,7 @@ class MenuController extends Controller
                 $query->select('id', 'nama');
             }, 'kategoriProduk' => function ($query) {
                 $query->select('id', 'nama');
-            }];
+            }, 'menu'];
 
         $data = $this->global->index($this->model, $request, $fields, $with, $withCount, $relations, $where, $has, $doesntHave);
 
@@ -58,7 +58,7 @@ class MenuController extends Controller
                 $query->select('id', 'nama');
             }, 'kategoriProduk' => function ($query) {
                 $query->select('id', 'nama');
-            }];
+            }, 'submenuItems'];
 
         $data = $this->global->index($this->model, $request, $fields, $with, $withCount, $relations, $where, $has, $doesntHave);
 
@@ -102,7 +102,8 @@ class MenuController extends Controller
             print($th);
         }
 
-        $id = ['id' => $request->id ? $request->id : Str::orderedUuid()];
+        $generateId = $request->id ? $request->id : Str::orderedUuid();
+        $id = ['id' => $generateId];
         $data = [
             'nama' => $request->nama,
             'warna' => $request->warna,
@@ -132,7 +133,7 @@ class MenuController extends Controller
                             'tipe' => $value['tipe'],
                             'blank' => $value['blank'],
                             'id_kategori_produk' => $value['id_kategori_produk'],
-                            'id_menu' => $value['id_menu'],
+                            'id_menu' => $generateId,
                         ];
 
                         $this->global->store($submenuModel, $submenuId, $submenuData);
